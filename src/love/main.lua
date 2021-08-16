@@ -108,7 +108,8 @@ settingsVer=3-switch
 		require "weeks.week3",
 		require "weeks.week4",
 		require "weeks.week5",
-		require "weeks.week6"
+		require "weeks.week6",
+		require "weeks.week7"
 	}
 	
 	-- Screen init
