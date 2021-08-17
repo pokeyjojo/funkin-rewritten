@@ -1,6 +1,6 @@
  # THIS IS IN VERY EARLY ALPHA ALMOST NOTHING IS WORKING AND ONLY WEEK 6 IS ADDED A RELEASE WILL BE PUBLISHED WHEN IT IS MORE STABLE 
 
-
+# Thanks to EggoTheSquirrel for most of the Whitty code go Check it out! https://github.com/EggoTheSquirrel/FNF-Rewritten-Vs-Whitty/releases/tag/v1.0.0
 
 
 

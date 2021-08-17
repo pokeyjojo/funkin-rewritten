@@ -1,29 +1,44 @@
-	local stageBack, stageFront, curtains
+local stageBack, stageFront, ballisticStage, ballisticEffect
 
 return {
 	enter = function(self)
 		weeks:enter()
 
-stageBack = Image(love.graphics.newImage(graphics.imagePath("week7/whittyBack")))
-		stageFront = Image(love.graphics.newImage(graphics.imagePath("week7/whittyFront")))
-	
+		if songNum == 3 then
+			ballisticStage = love.filesystem.load("sprites/week7/street-ballistic.lua")()
+			ballisticEffect = Image(love.graphics.newImage(graphics.imagePath("week7/red")))
+			ballisticEffect.x, ballisticEffect.y = cam.x, cam.y
+
+		else
+			stageBack = Image(love.graphics.newImage(graphics.imagePath("week7/whittyBack")))
+			stageFront = Image(love.graphics.newImage(graphics.imagePath("week7/whittyFront")))
+			stageFront.y = 400
+		end
 		
-		stageFront.y = 400
-		
-		enemy = love.filesystem.load("sprites/week1/daddy-dearest.lua")()
-		
-		girlfriend.x, girlfriend.y = 30, -90
-		enemy.x, enemy.y = -380, -110
+		if songNum == 3 then
+			enemy = love.filesystem.load("sprites/week7/WhittyCrazy.lua")()
+			enemy.x, enemy.y = -450, -50
+		else
+			enemy = love.filesystem.load("sprites/week7/Whitty.lua")()
+			enemy.x, enemy.y = -380, -50
+		end
+
+		girlfriend = love.filesystem.load("sprites/week7/girlfriend-sway.lua")()
+		girlfriend.x, girlfriend.y = 30, 0
 		boyfriend.x, boyfriend.y = 260, 100
 		
-		enemyIcon:animate("daddy dearest", false)
-		
+		if songNum == 3 then
+			enemyIcon:animate("crazy whitty", false)
+		else
+			enemyIcon:animate("whitty", false)
+		end
+
 		self:load()
 	end,
 	
 	load = function(self)
 		weeks:load()
-		
+				
 		if songNum == 3 then
 			inst = love.audio.newSource("music/week7/ballistic-inst.ogg", "stream")
 			voices = love.audio.newSource("music/week7/ballistic-voices.ogg", "stream")
@@ -54,6 +69,14 @@ stageBack = Image(love.graphics.newImage(graphics.imagePath("week7/whittyBack"))
 	end,
 	
 	update = function(self, dt)
+		if songNum == 3 then
+			ballisticStage:update(dt)
+						
+			if ballisticStage.anim.name ~= "moving" then 
+				ballisticStage:animate("moving", true)
+			end
+		end
+
 		if gameOver then
 			if not graphics.isFading then
 				if input:pressed("confirm") then
@@ -79,17 +102,26 @@ stageBack = Image(love.graphics.newImage(graphics.imagePath("week7/whittyBack"))
 		end
 		
 		weeks:update(dt)
-		
-		
+
+		if girlfriend.anim.name == "idle" then
+			girlfriend.anim.speed = 6 / (60 / bpm)
 		end
-		
+
+		if songNum == 3 and girlfriend.anim.name ~= "scared" then
+			girlfriend:animate("scared", true)
+		end
+				
 		if health >= 80 then
-			if enemyIcon.anim.name == "daddy dearest" then
-				enemyIcon:animate("daddy dearest losing", false)
+			if songNum == 3 and enemyIcon.anim.name == "crazy whitty" then
+				enemyIcon:animate("crazy whitty losing", false)
+			elseif enemyIcon.anim.name == "whitty" then
+				enemyIcon:animate("whitty losing", false)
 			end
 		else
-			if enemyIcon.anim.name == "daddy dearest losing" then
-				enemyIcon:animate("daddy dearest", false)
+			if songNum == 3 and enemyIcon.anim.name == "crazy whitty losing" then
+				enemyIcon:animate("crazy whitty", false)
+			elseif enemyIcon.anim.name == "whitty losing" then
+				enemyIcon:animate("whitty", false)
 			end
 		end
 		
@@ -102,7 +134,7 @@ stageBack = Image(love.graphics.newImage(graphics.imagePath("week7/whittyBack"))
 				graphics.fadeOut(0.5, function() Gamestate.switch(menu) end)
 			end
 		end
-		
+
 		weeks:updateUI(dt)
 	end,
 	
@@ -118,9 +150,14 @@ stageBack = Image(love.graphics.newImage(graphics.imagePath("week7/whittyBack"))
 			love.graphics.push()
 				love.graphics.translate(cam.x * 0.9, cam.y * 0.9)
 				
-				stageBack:draw()
-				stageFront:draw()
-				
+				if songNum == 3 then
+					 ballisticStage:draw()
+					ballisticEffect:draw()
+				else
+					stageBack:draw()
+					stageFront:draw()
+				end
+
 				girlfriend:draw()
 			love.graphics.pop()
 			love.graphics.push()
@@ -132,7 +169,6 @@ stageBack = Image(love.graphics.newImage(graphics.imagePath("week7/whittyBack"))
 			love.graphics.push()
 				love.graphics.translate(cam.x * 1.1, cam.y * 1.1)
 				
-				
 			love.graphics.pop()
 			weeks:drawRating(0.9)
 		love.graphics.pop()
@@ -143,7 +179,7 @@ stageBack = Image(love.graphics.newImage(graphics.imagePath("week7/whittyBack"))
 	leave = function(self)
 		stageBack = nil
 		stageFront = nil
-		curtains = nil
+		ballisticStage = nil
 		
 		weeks:leave()
 	end
