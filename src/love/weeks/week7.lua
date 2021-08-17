@@ -3,25 +3,13 @@ local stageBack, stageFront, ballisticStage, ballisticEffect
 return {
 	enter = function(self)
 		weeks:enter()
-
-		if songNum == 3 then
-			ballisticStage = love.filesystem.load("sprites/week7/street-ballistic.lua")()
-			ballisticEffect = Image(love.graphics.newImage(graphics.imagePath("week7/red")))
-			ballisticEffect.x, ballisticEffect.y = cam.x, cam.y
-
-		else
-			stageBack = Image(love.graphics.newImage(graphics.imagePath("week7/whittyBack")))
-			stageFront = Image(love.graphics.newImage(graphics.imagePath("week7/whittyFront")))
-			stageFront.y = 400
-		end
 		
-		if songNum == 3 then
-			enemy = love.filesystem.load("sprites/week7/WhittyCrazy.lua")()
-			enemy.x, enemy.y = -450, -50
-		else
-			enemy = love.filesystem.load("sprites/week7/Whitty.lua")()
-			enemy.x, enemy.y = -380, -50
-		end
+		enemy = love.filesystem.load("sprites/week7/Whitty.lua")()
+		enemy.x, enemy.y = -380, -50
+
+		stageBack = Image(love.graphics.newImage(graphics.imagePath("week7/whittyBack")))
+		stageFront = Image(love.graphics.newImage(graphics.imagePath("week7/whittyFront")))
+		stageFront.y = 400
 
 		girlfriend = love.filesystem.load("sprites/week7/girlfriend-sway.lua")()
 		girlfriend.x, girlfriend.y = 30, 0
@@ -38,8 +26,15 @@ return {
 	
 	load = function(self)
 		weeks:load()
-				
+		
 		if songNum == 3 then
+			ballisticStage = love.filesystem.load("sprites/week7/street-ballistic.lua")()
+			ballisticEffect = Image(love.graphics.newImage(graphics.imagePath("week7/red")))
+			ballisticEffect.x, ballisticEffect.y = cam.x, cam.y
+
+			enemy = love.filesystem.load("sprites/week7/WhittyCrazy.lua")()
+			enemy.x, enemy.y = -450, -50
+			
 			inst = love.audio.newSource("music/week7/ballistic-inst.ogg", "stream")
 			voices = love.audio.newSource("music/week7/ballistic-voices.ogg", "stream")
 		elseif songNum == 2 then
@@ -151,7 +146,7 @@ return {
 				love.graphics.translate(cam.x * 0.9, cam.y * 0.9)
 				
 				if songNum == 3 then
-					 ballisticStage:draw()
+					ballisticStage:draw()
 					ballisticEffect:draw()
 				else
 					stageBack:draw()
@@ -182,5 +177,6 @@ return {
 		ballisticStage = nil
 		
 		weeks:leave()
+		
 	end
-}
+	}
